@@ -1,0 +1,84 @@
+body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background-color: #2c2c2c;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+form {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+input[type="submit"] {
+    background-color: #954caf;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%; /* 使按钮占据整个表单宽度 */
+    box-sizing: border-box; /* 确保 padding 不影响宽度 */
+    display: block; /* 使按钮块级显示，独占一行 */
+}
+
+input[type="submit"]:hover {
+    background-color: #843e92;
+}
+
+.btn {
+    background-color: #954caf;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%; /* 使按钮占据整个表单宽度 */
+    box-sizing: border-box; /* 确保 padding 不影响宽度 */
+    display: block; /* 使按钮块级显示，独占一行 */
+}
+
+.btn:hover {
+    background-color: #843e92;
+}
+
+input[type="submit"] {
+    background-color: #954caf;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%; /* 使按钮占据整个表单宽度 */
+    box-sizing: border-box; /* 确保 padding 不影响宽度 */
+    display: block; /* 使按钮块级显示，独占一行 */
+}
+
+input[type="text"]:hover {
+    background-color: #843e92;
+}

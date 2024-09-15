@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Investment Platform</title>
+        <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <style>
+            body {
+                font-family: "Arial", sans-serif;
+                background-color: #000000;
+                color: #ffffff;
+                margin: 0;
+                padding: 20px;
+                height: 100vh;
+            }
+
+            .container {
+                background-color: #2c2c2c;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .table-row {
+                height: 100px;
+            }
+
+            h1,
+            h2 {
+                color: #ffffff;
+            }
+
+            h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #ffffff;
+            }
+
+            input,
+            button {
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                font-size: 16px;
+            }
+
+            button {
+                background-color: #954caf;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #843e92;
+            }
+
+            p {
+                margin-top: 20px;
+                font-size: 18px;
+                color: #954caf;
+            }
+
+            input[type="submit"] {
+                background-color: #954caf;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #843e92;
+            }
+
+            input[type="text"]:hover {
+                background-color: #ffffff;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                padding: 20px;
+                }
+
+                h2 {
+                font-size: 20px;
+                }
+
+                input,
+                button {
+                font-size: 14px;
+                }
+
+                p {
+                font-size: 16px;
+                }
+
+                #projectDropdown {
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                font-size: 16px;
+                }
+
+                .features {
+                border: #938c8c;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse; /* Ensure borders collapse into single lines */
+            }
+
+            table th, table td {
+                border: 1px solid white; /* Adjust color as needed */
+                padding: 8px;
+                text-align: left;
+            }
+
+            thead {
+                background-color: #343a40; /* Dark background for the header */
+                color: white; /* White text */
+            }
+
+            tbody tr:nth-child(even) {
+                background-color: #2c2c2c; /* Alternate row background color */
+            }
+
+            #connect-btn {
+                width: 30%;
+            }
+
+        </style>
+        
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Investment Platform</a>
+                <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button> -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <button  id="connect-btn" onclick="loginWithMetaMask()">Login with MetaMask</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            <h1 class="text-center">Investment Platform</h1>
+            <div class="row mb-5">
+                <div class="features">
+                    
+                    <div class="col-12">
+                        <h2>Exist projects</h2>
+                        <table id="projectsTable" class="table table-bordered table-striped table-dark" >
+                            <thead>
+                                <tr>
+                                    <th>Project ID</th>
+                                    <th>Project Name</th>
+                                    <th>Target Amount (ETH)</th>
+                                    <th>Current Amount (ETH)</th>
+                                    <th>Deadline (Timestamp)</th>
+                                    <th>Creator</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 动态插入项目数据 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                
+                <div class="row">
+                    <!-- 创建项目 -->
+                    <div class="col-lg-6 col-md-12 mb-3">
+                        <div class="features">
+                            <h2>Create Project</h2>
+                            <input type="text" id="projectName" class="form-control mb-2" placeholder="Project Name">
+                            <input type="number" id="targetAmount" class="form-control mb-2" placeholder="Target Amount (ETH)">
+                            <input type="datetime-local" id="deadline" class="form-control mb-2" placeholder="Deadline">
+                            <button class="btn btn-primary w-100" onclick="createProject()">Create Project</button>
+                            <p id="createProjectMessage"></p>
+                        </div>
+                    </div>
+
+                    <!-- 投资项目 -->
+                    <div class="col-lg-6 col-md-12 mb-3">
+                        <div class="features">
+                            <h2>Invest in a Project</h2>
+                            <select id="projectDropdown" class="form-select mb-2">
+                                <option value="">Select a project</option>
+                            </select>
+                            <input type="number" id="investmentAmount" class="form-control mb-2" placeholder="Investment Amount (ETH)">
+                            <button class="btn btn-primary w-100" onclick="investInProject()">Invest</button>
+                            <p id="investMessage"></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 mb-3">
+                        <!-- 提取资金 -->
+                        <div class="features">
+                            <h2>Withdraw Funds (For Project Creators)</h2>
+                            <input type="number" id="withdrawProjectId" class="form-control mb-2" placeholder="Project ID">
+                            <button class="btn btn-primary w-100" onclick="withdrawFunds()">Withdraw Funds</button>
+                            <p id="withdrawMessage"></p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-12 mb-3">
+                        <!-- 分红 -->
+                        <div class="features">
+                            <h2>Distribute Dividends</h2>
+                            <input type="number" id="dividendProjectId" class="form-control mb-2" placeholder="Project ID">
+                            <button class="btn btn-primary w-100" onclick="distributeDividends()">Distribute Dividends</button>
+                            <p id="dividendMessage"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            //log in with metamask
+            async function loginWithMetaMask() {
+                if (window.ethereum) {
+                    try {
+                        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                        const account = accounts[0];
+                        alert('Connected as ' + account);
+                    } catch (error) {
+                        console.error('User denied account access', error);
+                        alert('Login failed!');
+                    }
+                } else {
+                    alert('MetaMask not detected! Please install MetaMask.');
+                }
+            }
+
+
+
+
+            // let contract;
+            const contractAddress = "0xb9da85cebc6f68346fc595c815c216053955d24a"; // 您的合约地址
+            const contractABI = [ /* 您的ABI */
+                {
+                    "inputs": [
+                        {
+                            "internalType": "string",
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "targetAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "deadline",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "createProject",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "distributeDividends",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "totalDividend",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "DividendDistributed",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "amount",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "FundsWithdrawn",
+                    "type": "event"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "invest",
+                    "outputs": [],
+                    "stateMutability": "payable",
+                    "type": "function"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "address",
+                            "name": "investor",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "amount",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "InvestmentReceived",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "string",
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "targetAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "deadline",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "address",
+                            "name": "creator",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "ProjectCreated",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "internalType": "uint256",
+                            "name": "totalAmount",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "ProjectFunded",
+                    "type": "event"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "projectId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "withdrawFunds",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "projectIdCounter",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "projects",
+                    "outputs": [
+                        {
+                            "internalType": "string",
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "targetAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "currentAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "deadline",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "creator",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "isFunded",
+                            "type": "bool"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+
+            ];
+
+            const web3 = new Web3(Web3.givenProvider);
+            console.log(web3);
+            const contract = new web3.eth.Contract(contractABI, contractAddress);
+            console.log(contract);
+            console.log(contract.methods);
+
+            // window.addEventListener('load', async () => {
+            //     if (typeof window.ethereum !== 'undefined') {
+            //         try {
+            //             // 初始化 Web3 实例
+            //             const web3 = new Web3(window.ethereum);
+                        
+            //             // 请求 MetaMask 连接
+            //             await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        
+            //             // 合约实例化
+            //             // const contract = new web3.eth.Contract(contractABI, contractAddress);
+                        
+            //             console.log('Connected to MetaMask');
+            //         } catch (error) {
+            //             console.error('User denied account access', error);
+            //         }
+            //     } else {
+            //         console.log('Please install MetaMask!');
+            //     }
+            // });
+
+
+            // 创建项目
+            async function createProject() {
+                const name = document.getElementById('projectName').value;
+                const targetAmount = web3.utils.toWei(document.getElementById('targetAmount').value, 'ether');
+                const deadline = new Date(document.getElementById('deadline').value).getTime() / 1000;
+                const accounts = await web3.eth.getAccounts();
+                const sender = accounts[0];
+
+                try {
+                    await contract.methods.createProject(name, targetAmount, deadline).send({ from: sender });
+                    document.getElementById('createProjectMessage').innerText = "Project created successfully!";
+                    await loadProjects(); // 创建后重新加载项目
+                } catch (error) {
+                    document.getElementById('createProjectMessage').innerText = `Error: ${error.message}`;
+                }
+
+                // Send project data to the Flask backend
+                try {
+                    const response = await fetch('/add_project', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ projectName: name, targetAmount, deadline, creator })
+                    });
+                    const result = await response.json();
+                    document.getElementById('createProjectMessage').innerText = result.status;
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('createProjectMessage').innerText = `Error: ${error.message}`;
+                }
+
+            }
+                
+
+            // 加载所有项目
+            async function loadProjects() {
+
+                const projectCount = await contract.methods.projectIdCounter().call();  // 获取项目总数
+                const select = document.getElementById("projectDropdown");
+                const selectedProjectId = document.getElementById('projectDropdown').value;
+                const investmentAmount = document.getElementById('investmentAmount').value;
+
+                const tableBody = document.getElementById("projectsTable").getElementsByTagName("tbody")[0];
+
+                // 清空之前加载的表格数据
+                tableBody.innerHTML = '';
+
+                for (let i = 1; i <= projectCount; i++) {
+                    const project = await contract.methods.projects(i).call();  // 获取每个项目的详细信息
+
+                    // 创建一个表格行
+                    const row = document.createElement("tr");
+
+                    // 插入项目 ID
+                    const projectIdCell = document.createElement("td");
+                    projectIdCell.textContent = i;
+                    row.appendChild(projectIdCell);
+
+                    // 插入项目名称
+                    const projectNameCell = document.createElement("td");
+                    projectNameCell.textContent = project.name;
+                    row.appendChild(projectNameCell);
+
+                    // 插入目标金额（将单位从 wei 转换为 ETH）
+                    const targetAmountCell = document.createElement("td");
+                    targetAmountCell.textContent = web3.utils.fromWei(project.targetAmount, 'ether') + " ETH";
+                    row.appendChild(targetAmountCell);
+
+                    // 插入当前金额（将单位从 wei 转换为 ETH）
+                    const currentAmountCell = document.createElement("td");
+                    currentAmountCell.textContent = web3.utils.fromWei(project.currentAmount, 'ether') + " ETH";
+                    row.appendChild(currentAmountCell);
+
+                    // 插入截止日期（时间戳）
+                    const deadlineDate = new Date(project.deadline * 1000);  // 时间戳是秒，JavaScript中的Date需要毫秒
+                    const deadlineCell = document.createElement("td");
+                    deadlineCell.textContent = deadlineDate.toLocaleString();  // 使用浏览器的本地化日期格式
+                    row.appendChild(deadlineCell);
+
+                    // 插入创建者地址
+                    const creatorCell = document.createElement("td");
+                    creatorCell.textContent = project.creator;
+                    row.appendChild(creatorCell);
+
+                    // 插入项目状态（已募资 / 未募资）
+                    const statusCell = document.createElement("td");
+                    statusCell.textContent = project.isFunded ? "Funded" : "Not Funded";
+                    row.appendChild(statusCell);
+
+                    // 将行添加到表格中
+                    tableBody.appendChild(row);
+                }
+
+                for (let i = 1; i <= projectCount; i++) {
+                    const project = await contract.methods.projects(i).call();  // 获取项目详细信息
+                    const option = document.createElement("option");
+                    option.value = i;  // 以项目 ID 作为 value
+                    option.text = project.name;  // 显示项目名称
+                    select.appendChild(option);
+
+                    console.log('download successfully')
+                }
+
+                try {
+                    const response = await fetch('/get_projects');
+                    const projects = await response.json();
+
+                    projects.forEach((project) => {
+                        const row = document.createElement("tr");
+
+                        const projectIdCell = document.createElement("td");
+                        projectIdCell.textContent = project.id;
+                        row.appendChild(projectIdCell);
+
+                        const projectNameCell = document.createElement("td");
+                        projectNameCell.textContent = project.name;
+                        row.appendChild(projectNameCell);
+
+                        const targetAmountCell = document.createElement("td");
+                        targetAmountCell.textContent = project.target_amount + " ETH";
+                        row.appendChild(targetAmountCell);
+
+                        const currentAmountCell = document.createElement("td");
+                        currentAmountCell.textContent = project.current_amount + " ETH";
+                        row.appendChild(currentAmountCell);
+
+                        const deadlineCell = document.createElement("td");
+                        deadlineCell.textContent = project.deadline;
+                        row.appendChild(deadlineCell);
+
+                        const creatorCell = document.createElement("td");
+                        creatorCell.textContent = project.creator;
+                        row.appendChild(creatorCell);
+
+                        const statusCell = document.createElement("td");
+                        statusCell.textContent = project.current_amount >= project.target_amount ? "Funded" : "Not Funded";
+                        row.appendChild(statusCell);
+
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+        window.addEventListener('load', async () => {
+            await loadProjects();  // 在页面加载时调用此函数
+        });
+
+
+            // 投资项目
+            async function investInProject() {
+                const projectId = document.getElementById('projectDropdown').value;
+                const investmentAmount = web3.utils.toWei(document.getElementById('investmentAmount').value, 'ether');
+                const accounts = await web3.eth.getAccounts();
+                const sender = accounts[0];
+
+                try {
+                    await contract.methods.invest(projectId).send({ from: sender, value: investmentAmount });
+                    document.getElementById('investMessage').innerText = "Investment successful!";
+                } catch (error) {
+                    document.getElementById('investMessage').innerText = `Error: ${error.message}`;
+                }
+            }
+
+            // 提取资金
+            async function withdrawFunds() {
+                const projectId = document.getElementById('withdrawProjectId').value;
+                const accounts = await web3.eth.getAccounts();
+                const sender = accounts[0];
+
+                try {
+                    await contract.methods.withdrawFunds(projectId).send({ from: sender });
+                    document.getElementById('withdrawMessage').innerText = "Funds withdrawn successfully!";
+                } catch (error) {
+                    document.getElementById('withdrawMessage').innerText = `Error: ${error.message}`;
+                }
+            }
+
+            // 分红给投资者
+            async function distributeDividends() {
+                const projectId = document.getElementById('dividendProjectId').value;
+                const accounts = await web3.eth.getAccounts();
+                const sender = accounts[0];
+
+                try {
+                    await contract.methods.distributeDividends(projectId).send({ from: sender });
+                    document.getElementById('dividendMessage').innerText = "Dividends distributed successfully!";
+                } catch (error) {
+                    document.getElementById('dividendMessage').innerText = `Error: ${error.message}`;
+                }
+            }
+        </script>
+    </body>
+</html>
